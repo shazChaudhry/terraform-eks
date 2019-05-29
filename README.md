@@ -26,14 +26,7 @@ This example has been taken from: https://learn.hashicorp.com/terraform/aws/eks-
 
 ## Setup guestbook app
 1. See `kubectl_config.tf` for configuring the cluster which is a manual process
-2. you should be able to use kubectl to view node status: `kubectl get nodes`
-3. Finally you can follow the exact steps in the AWS docs to create the app. Here they are again:
-```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/redis-master-controller.json
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/redis-master-service.json
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/redis-slave-controller.json
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/redis-slave-service.json
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/guestbook-controller.json
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/kubernetes/v1.10.3/examples/guestbook-go/guestbook-service.json
-```
-4. Then you can get the endpoint with kubectl: `kubectl get services`
+2. you should be able to use kubectl to view node status: `kubectl get nodes --watch`
+3. Finally, you can deploy a guestbook application: `https://docs.aws.amazon.com/eks/latest/userguide/eks-guestbook.html`
+4. Then you should be able to get the endpoint with kubectl: `ubectl get services -o wide` e.g. http://adf8587e8822b11e985ed06aa4a3435a-1242824340.eu-west-2.elb.amazonaws.com:3000/
+5. Then deploy the kubernetes web UI (Dashboard): `https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html`
