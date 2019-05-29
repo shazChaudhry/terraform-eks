@@ -1,4 +1,6 @@
-## This example has been taken from: https://learn.hashicorp.com/terraform/aws/eks-intro
+## This is work in progress
+
+This example has been taken from: https://learn.hashicorp.com/terraform/aws/eks-intro
 
 ## Prerequisites
 - Ensure that a .pem key is available under: "~/.ssh/" on the host dev machine. In my case it is called personal.pem
