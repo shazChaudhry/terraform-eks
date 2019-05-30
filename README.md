@@ -1,9 +1,10 @@
-## This is work in progress
+A large chunk of this repo has been taken from [AWS EKS Introduction; Terraform example](https://learn.hashicorp.com/terraform/aws/eks-intro). However, this repository has been modified
+- to enable both public and private endpoints. This behavior allows Kubernetes API requests within your cluster's VPC (such as worker node to control plane communication) use the private VPC endpoint
+- Saves terraform state in a S3 bucket
 
-This example has been taken from: https://learn.hashicorp.com/terraform/aws/eks-intro
+![API server endpoint access options](./pics/API_server_endpoint_access_options.15.37.png "API server endpoint access options")
 
 ## Prerequisites
-- Ensure that a .pem key is available under: "~/.ssh/" on the host dev machine. In my case it is called personal.pem
 - Ensure that AWS credentials are available at: "~/.aws/credentials" on the host dev machine
 ```
       [default]
