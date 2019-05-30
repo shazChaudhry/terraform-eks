@@ -8,7 +8,7 @@ resource "aws_eks_cluster" "demo" {
   vpc_config {
     security_group_ids = ["${aws_security_group.demo-cluster.id}"]
     subnet_ids         = ["${aws_subnet.demo.*.id}"]
-    # https://www.terraform.io/docs/providers/aws/r/eks_cluster.html#endpoint_public_access
+    # https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html#modify-endpoint-access
     endpoint_private_access = true # Kubernetes API requests within your cluster's VPC (such as worker node to control plane communication) use the private VPC endpoint. if this is disabled, then any kubectl commands must come from within the VPC
     endpoint_public_access  = true # Your cluster API server is accessible from the internet
   }
