@@ -10,6 +10,7 @@ A large chunk of this repo has been taken from [AWS EKS Introduction; Terraform 
       [default]
       aws_access_key_id = <KEY>
       aws_secret_access_key = <SECRET>
+      region = <REGION>
 ```
 - Ensure that a S3 bucket as a backend type is created. See the docs [here](https://www.terraform.io/docs/backends/types/s3.html)
 ```
@@ -19,7 +20,7 @@ A large chunk of this repo has been taken from [AWS EKS Introduction; Terraform 
           # you will need a globally unique bucket name
           bucket  = "ci.terraform"
           key     = "eks/terraform.tfstate"
-          region  = "eu-west-2"
+          region  = "<REGION>"
           encrypt = true
         }
       }
@@ -31,3 +32,7 @@ A large chunk of this repo has been taken from [AWS EKS Introduction; Terraform 
 3. Finally, you can deploy a guestbook application: `https://docs.aws.amazon.com/eks/latest/userguide/eks-guestbook.html`
 4. Then you should be able to get the endpoint with kubectl: `ubectl get services -o wide` e.g. http://adf8587e8822b11e985ed06aa4a3435a-1242824340.eu-west-2.elb.amazonaws.com:3000/
 5. Then deploy the kubernetes web UI (Dashboard): `https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html`
+
+## References
+1. [Kubernetes architecture and concepts tutorial - Kubernetes Administration for beginners](https://youtu.be/oFglQ50O_rU)
+2. [Kubernetes - Services Explained](https://youtu.be/5lzUpDtmWgM)
