@@ -1,57 +1,46 @@
-# The below will create a 10.0.0.0/16 VPC, two 10.0.X.0/24 subnets, an internet gateway, and setup the
-# subnet routing to route external traffic through the internet gateway:
+provider "aws" {
+  region = var.region
+}
 
+terraform {
+  backend "s3" {
+    bucket  = "schaudhryltd"
+    key     = "eks/terraform.tfstate"
+    region  = "eu-west-2"
+    encrypt = true
+  }
+}
 
 data "aws_availability_zones" "available" {}
 
-resource "aws_vpc" "demo" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support = true
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
 
-  tags = "${
-    map(
-     "Name", "terraform-eks-demo-node",
-     "kubernetes.io/cluster/${var.cluster-name}", "shared",
-    )
-  }"
-}
+  name                             = var.cluster_name
+  cidr                             = var.cidr
+  azs                              = data.aws_availability_zones.available.names
+  private_subnets                  = [cidrsubnet(var.cidr, 8, 0), cidrsubnet(var.cidr, 8, 1), cidrsubnet(var.cidr, 8, 2)]
+  public_subnets                   = [cidrsubnet(var.cidr, 8, 3), cidrsubnet(var.cidr, 8, 4), cidrsubnet(var.cidr, 8, 5)]
+  enable_nat_gateway               = true
+  single_nat_gateway               = true
+  enable_dns_hostnames             = true
+  enable_dns_support               = true
+  map_public_ip_on_launch          = true
+  enable_dhcp_options              = true
+  dhcp_options_domain_name         = var.DnsZoneName
+  dhcp_options_domain_name_servers = ["AmazonProvidedDNS"]
 
-resource "aws_subnet" "demo" {
-  count = 2
+  tags = merge(
+    var.core_tags, { "kubernetes.io/cluster/${var.cluster_name}" = "shared" },
+  )
 
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  cidr_block        = "10.0.${count.index}.0/24"
-  vpc_id            = "${aws_vpc.demo.id}"
-
-  tags = "${
-    map(
-     "Name", "terraform-eks-demo-node",
-     "kubernetes.io/cluster/${var.cluster-name}", "shared",
-    )
-  }"
-}
-
-resource "aws_internet_gateway" "demo" {
-  vpc_id = "${aws_vpc.demo.id}"
-
-  tags = {
-    Name = "terraform-eks-demo"
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
   }
-}
 
-resource "aws_route_table" "demo" {
-  vpc_id = "${aws_vpc.demo.id}"
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.demo.id}"
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"           = "1"
   }
-}
-
-resource "aws_route_table_association" "demo" {
-  count = 2
-
-  subnet_id      = "${aws_subnet.demo.*.id[count.index]}"
-  route_table_id = "${aws_route_table.demo.id}"
 }
